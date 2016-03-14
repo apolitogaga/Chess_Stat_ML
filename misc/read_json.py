@@ -1,36 +1,34 @@
-'''
-Author: Hector Apolo Rosales Pulido
-'''
+__author__ = "codingMonkey"
+__project__ = "ChessML"
+
+
 import json
 from StringIO import StringIO
 from pprint import pprint
 from collections import defaultdict
+from nltk.metrics.distance import edit_distance
 
-from os.path import isfile, join
-from os import listdir
-
-
-
+from os.path import isfile, join, expanduser
+from os import listdir, linesep
 
 TFILE = "../../data/test.json"
-OUTPUT=  "/Users/hectorapolorosalespulido/Documents/thesisDataFast/out/OUT"
+OUTPUT=  "/Users/hectorapolorosalespulido/Documents/thesisDataFast/out/OUT_20.json"
 i=1
 ofile =  OUTPUT+"_"+str(i)+".json"
 infiles = "/Users/hectorapolorosalespulido/Documents/thesisDataFast/out/"
+PATH_OUTPUT= expanduser("~/Documents/thesisDataFast/data/")
 
-def getFilesFromFolder():
+def getFilesFromFolder(infiles=infiles):
     onlyfiles = [f for f in listdir(infiles) if isfile(join(infiles, f))]
     if '.DS_Store' in onlyfiles:
         onlyfiles.__delitem__(onlyfiles.index('.DS_Store'))
-    if 'OUT_173.json' in onlyfiles:
-        onlyfiles.__delitem__(onlyfiles.index('OUT_173.json'))
     return onlyfiles
 
 properties = {}
 
-competitors = set()
+competitors = {}
 
-network = defaultdict(lambda: defaultdict(set()))
+
 netwrk = defaultdict(lambda: set())
 
 
@@ -44,41 +42,62 @@ def addit(dict, element):
     else:
         dict[element]=1
 
-def addFrozet(dict, element):
-    pass
+def addCompetitor(defDict, string):
+    string = process_text(string)
+    nameList = string.split()
+    lastname = nameList[0]
+    name = " ".join(nameList[1:])
+    if lastname in defDict:
+        addit(defDict[lastname],name)
+    else:
+        defDict[lastname] = {name:1}
+
+def process_text(string):
+    temp = string.replace(",","")
+    temp = temp.replace(".","")
+    return temp
+
+'''
+We sort and return the data in a text file.
+'''
+def dict2Text(dic):
+    text=""
+    sor = sorted(dic.items(), key=lambda x:x[len(x)-1],reverse=True)
+    for key, value in sor:
+        text += key.encode("utf8") + " " + str(value) + linesep
+    return text
+
+'''
+Save the file
+'''
+def saveFile(data, filename):
+    f = open(PATH_OUTPUT+filename,"w")
+    f.write(data)
+    f.close()
 
 
-def main():
-    properties = {}
-    count =1
-    files =  getFilesFromFolder()
-    for f in files[0:1]:
-        print f
-        path= infiles+f
-        # print path
-        with open(path) as f:
-            jsn = f.read().splitlines()
-            for line in jsn:
-                count +=1
-                data={}
-                data = json.loads(line)
-                addList(properties,data.keys())
-                if "Black" in data:
-                    competitors.add(data["Black"])
-                if "White" in data:
-                    competitors.add(data["White"])
-    print properties
-    print count
+'''
+Interpret the json
+'''
+def get_data(file):
+    network = []
+    with open(file) as f:
+        jsn = f.read().splitlines()
+        for line in jsn:
+            network.append(json.loads(line))
+    return network
 
-    print len(competitors)
-    comp = list(competitors)
-    for i in range(0,len(competitors),5):
-        # print i
-        # print comp[i],comp[i+1],comp[i+2],comp[i+3],comp[i+4]
-        print "%s \t %s \t $s \t %s \t %s"%(str(comp[i]),str(comp[i+1]),str(comp[i+2]),str(comp[i+3]),str(comp[i+4]))
-        # i+=5
-
-
+'''
+{u'BlackTitle': 62000, u'BlackElo': 793304, u'EventCategory': 1, u'Black': 981446,
+ u'Board': 863, u'BlackTeam': 26006, u'White': 981446, u'WhiteTeamCountry': 18,
+ u'Opening': 117041, u'fen': 981446, u'EventType': 14296, u'Variant': 5,
+ u'Annotator': 15, u'Variation': 60905, u'Date': 981446, u'WhiteTeam': 26006,
+ u'BlackTeamCountry': 18, u'FEN': 61, u'EventCountry': 25, u'WhiteElo': 797806, u'WhiteTitle': 62346,
+  u'ECO': 975268, u'EventRounds': 3, u'PlyCount': 44363, u'Round': 981446, u'SetUp': 63,
+  u'BlackFideId': 115256, u'Site': 981446, u'EventDate': 273147, u'WhiteFideId': 115310,
+   u'Result': 981446, u'Event': 981446}
+981448
+'''
 '''
 example:
 
@@ -103,10 +122,10 @@ u'Variation': 35906, u'Date': 628015, u'WhiteTeam': 16902, u'BlackTeamCountry': 
 u'WhiteTitle': 39417, u'ECO': 624144, u'EventRounds': 3, u'PlyCount': 27019, u'Round': 628015, u'SetUp': 64, u'BlackFideId': 75805,
 u'Site': 628015, u'EventDate': 178511, u'WhiteFideId': 76012, u'Result': 628015, u'Event': 628015}
 
-'''
+'''if __name__ == '__main__':
 
 
 
-if __name__ == '__main__':
     print "RUNNING THE PARSER FILE"
-    main()
+    data= get_data(OUTPUT)[1]
+    print data['fen']

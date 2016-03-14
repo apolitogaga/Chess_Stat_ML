@@ -3,6 +3,7 @@
 # not just one large).
 import json
 import chess.pgn # From python-chess https://github.com/niklasf/python-chess
+# https://python-chess.readthedocs.org/en/latest/
 from os import linesep
 from collections import defaultdict
 import sys, getopt
