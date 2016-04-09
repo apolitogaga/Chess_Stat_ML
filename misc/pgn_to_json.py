@@ -8,12 +8,7 @@ from os import linesep
 from collections import defaultdict
 import sys, getopt
 
-# GORGO_BASE = "/Users/hectorapolorosalespulido/Documents/thesisDataFast/gorgoBase.pgn"
-# GORGO_OUT = "/Users/hectorapolorosalespulido/Documents/thesisDataFast/gorgoBase3.json"
-# IFILE =  "../../data/test.pgn"
-# OFILE =  "../../data/test.json"
 
-# dump = defaultdict(lambda : list)
 def to_json(ifile, ofile):
   count = 1
   pgn = open(ifile) # Or where you have put it

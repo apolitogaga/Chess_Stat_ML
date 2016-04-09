@@ -4,7 +4,7 @@ import os
 OUTPUT=  "/Users/hectorapolorosalespulido/Documents/thesisDataFast/out/OUT"
 DUMP=  "/Users/hectorapolorosalespulido/Documents/thesisDataFast/pgn/OUT"
 
-for i in range(975,1000):
+for i in range(1,1000):
     # print i
     ifile = DUMP +"_"+str(i)+".pgn"
     ofile =  OUTPUT+"_"+str(i)+".json"
