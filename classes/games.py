@@ -18,22 +18,21 @@ class Game(BaseClass):
     id = None
     ID = 1
     fen = None
-    score= None
 
-    def __init__(self, name, fen, event, wplay, bplay, result, welo, belo, round=None):
-        super(Game, self).__init__(name)
-        self.result = result
-        self.round = round
-        self.white = wplay
-        self.black = bplay
-        self.event = event
-        self.welo = welo
-        self.belo = belo
-        self.id = Game.ID
-        Game.ID += 1
-        fen_eval = interpret_fen(fen)
-        self.fen = fen_eval['board']
-        self.fen_eval = fen_eval['score']
+    # def __init__(self, name, fen, event, wplay, bplay, result, welo, belo, round=None):
+    #     super(Game, self).__init__(name)
+    #     self.result = result
+    #     self.round = round
+    #     self.white = wplay
+    #     self.black = bplay
+    #     self.event = event
+    #     self.welo = welo
+    #     self.belo = belo
+    #     self.id = Game.ID
+    #     Game.ID += 1
+    #     fen_eval = interpret_fen(fen)
+    #     self.fen = fen_eval['board']
+    #     self.fen_eval = fen_eval['score']
 
     def __init__(self, name, fen, event, wplay, bplay, result, welo, belo, round, fen_eval):
         super(Game, self).__init__(name)

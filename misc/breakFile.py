@@ -72,6 +72,7 @@ from collections import defaultdict
 
 FOLDS=1000
 INPUT = GORGO_BASE
+
 def main():
     dump = defaultdict(lambda : list)
 

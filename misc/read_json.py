@@ -18,23 +18,18 @@ ofile =  OUTPUT+"_"+str(i)+".json"
 infiles = "/Users/hectorapolorosalespulido/Documents/thesisDataFast/out/"
 PATH_OUTPUT= expanduser("~/Documents/thesisDataFast/data/")
 
+
 def getFilesFromFolder(infiles=infiles):
     onlyfiles = [f for f in listdir(infiles) if isfile(join(infiles, f))]
     if '.DS_Store' in onlyfiles:
         onlyfiles.__delitem__(onlyfiles.index('.DS_Store'))
     return onlyfiles
 
-properties = {}
-
-competitors = {}
-
-
-netwrk = defaultdict(lambda: set())
-
 
 def addList(dict, list):
     for l in list:
         addit(dict, l)
+
 
 def addit(dict, element):
     if element in dict:

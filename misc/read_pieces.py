@@ -36,6 +36,17 @@ def getPatList(pat, ext, limit=1000):
     return [pat + "_" + str(i) + ext for i in range(0, limit)]
 
 
+def getFilesToProcess(out_path, pattern, extension):
+    infiles = getFilesFromFolder(out_path)
+    # l = getPatList(pattern,ext
+    l = []
+    for i in range(0, 1000):
+        f = pattern + "_" + str(i) + extension
+        if f not in infiles:
+            l.append(i)
+    return l
+    pass
+
 def getNewFileToProcess(input_path, pattern, ext):
     """
 
