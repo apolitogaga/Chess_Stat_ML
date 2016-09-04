@@ -38,7 +38,7 @@ class Node(object):
 
         Node.ALLNODES[name] = self
         Node.ID_STATIC += 1
-        # print "Created: %s %d, %d %d"%(name,result,self.id, Node.ID_STATIC)
+
 
     @classmethod
     def init_back_node(self, name, result, back_node, score):
@@ -55,10 +55,10 @@ class Node(object):
         pass
 
     def __str__(self):
-        text = "%d "%(self.get_weight())
-        for i in self.forward_nodes.values():
-            # print type(i[1])
-            text += "%s"%(str(i[1]))
+        text = "%d <> %d, %d, %d"%(self.get_weight(),self.get_movement_total(),self.get_nodes_weight(self.forward_nodes),self.get_nodes_weight(self.back_nodes))
+        # for key, value in self.forward_nodes.iteritems():
+        #     # print type(i[1])
+        #     text += "%s"%(key)
         return text
 
     def __repr__(self):
@@ -68,9 +68,9 @@ class Node(object):
         other = other_all_nodes[other_node]
         self.add_nodes(self.back_nodes,other.back_nodes, other_all_nodes)
         self.add_nodes(self.forward_nodes,other.forward_nodes, other_all_nodes)
+        self.add_movements(other)
         self.results.extend(other.results)
         pass
-
 
     def set_score(self,score):
         self.score = score
@@ -80,14 +80,26 @@ class Node(object):
         self.id_all += 1
         self.all_nodes[appendable_node.name] = appendable_node
 
+    def get_nodes_weight(self,nodes):
+        num = 0
+        if nodes != None:
+            for n in nodes.values():
+                num += n
+            return num
+
     def calculate_frequency(self):
-        self.frequency = len(self.forward_nodes)
+        self.frequency = self.get_nodes_weight(self.forward_nodes)
 
     def add_forward_nodes(self, other_node):
         self.add_nodes(self.forward_nodes, other_node.forward_nodes)
 
     def add_backward_nodes(self, other_node):
         self.add_nodes(self.back_nodes, other_node.back_nodes)
+
+    def add_movements(self, other_node):
+        for key, val in other_node.movements.iteritems():
+            self.add_movement(key, val)
+        pass
 
     def add_nodes(self,nodes,other_nodes, other_all_nodes):
         '''
@@ -97,18 +109,17 @@ class Node(object):
         :param all_nodes:
         :return:
         '''
-        for list in other_nodes.values():
-            node = other_all_nodes[list[1]]
-            occurences = list[0]
+        for key, value in other_nodes.iteritems():
+            node = other_all_nodes[key]
+            occurences = value
             self.add_node(nodes,node.name,occurences)
-            self.results.extend(node.results)
 
 
     def add_node(self, nodes, name_next, val=1):
         if name_next in nodes:
-            nodes[name_next][0] += val
+            nodes[name_next] += val
         else:
-            nodes[name_next] = [val, name_next]
+            nodes[name_next] = val
 
     def save_all_nodes(self):
         self.all_nodes = Node.ALLNODES
@@ -143,7 +154,7 @@ class Node(object):
                 raise NodeException
 
 
-    def add_movement(self,movement, number):
+    def add_movement(self,movement, number=1):
         '''
         :param movement: Movement number to add to this node
         '''
@@ -168,13 +179,17 @@ class Node(object):
         pass
 
     def get_weight(self):
-        num = 0
-        for n in self.forward_nodes.values():
-            num += n[0]
-        for n in self.back_nodes.values():
-            num += n[0]
-        return num
+        return len(self.results)
 
+    def get_ordered_forward_nodes(self):
+        return sorted(self.forward_nodes.items(), key=lambda x:x[1])[::-1]
+
+    def get_ordered_backward_nodes(self):
+        return sorted(self.back_nodes.items(), key=lambda x:x[1])[::-1]
+
+    def order_out_nodes(self):
+        self.forward_nodes = self.get_ordered_forward_nodes()
+        self.back_nodes = self.get_ordered_backward_nodes()
 
     def print_branched_nodes(self):
         print "name %d"%self.get_weight()+"--->>> \t\t\t" + self.name + " %d <> %d"%(len(self.forward_nodes),len(self.back_nodes))
@@ -185,6 +200,42 @@ class Node(object):
         #     for nodes in self.back_nodes.values():
         #         print "%d <> %s"%(nodes[0], nodes[1])
         pass
+
+    def get_result_string(self):
+        """
+        Returns a string with the probability of white, draw and black result, so far seen here.
+        :return:
+        """
+        n = len(self.results)+.0
+        return str(self.results.count(1)/n+.0) +"," + str(self.results.count(0)/n) + "," + str(self.results.count(-1)/n)
+
+    def get_stats(self):
+        '''
+        Gets important stats in the following format
+        #of times visited, number of incoming nodes, % most frequent node, number of posterior nodes, % most frequent back node, movements found in, victory %,
+        :return: text with the preceding text
+        '''
+        n = self.get_weight() + 0.0
+        text =  str(n) + ","
+        text += str(len(self.back_nodes)) + ","
+        if len(self.back_nodes) > 0:
+            text += str(self.get_ordered_backward_nodes()[0][1]/n) + ","
+        else:
+            text += "0,"
+        text += str(len(self.forward_nodes)) + ","
+        if len(self.forward_nodes) > 0:
+            text += str(self.get_ordered_forward_nodes()[0][1]/n) + ","
+        else:
+            text += "0,"
+        text += str(len(self.movements)) + ","
+        text += self.get_result_string()
+        return text
+
+    def get_movement_total(self):
+        total = 0
+        for num in self.movements.values():
+            total += num
+        return total
 
 def get_node(name, res, score, b_node):
     new_node = None
@@ -204,12 +255,7 @@ def merge_nodes(node,other_node):
     intersection = keys_a & keys_b
 
 
-
-    for mov in other_node.movements.keys():
-        if mov in node.movements:
-            node.movements[mov] += other_node.movements[mov]
-        else:
-            node.movements[mov] = other_node.movements[mov]
+    # print intersection
 
     # Node.ALLNODES = node.all_nodes
     # node_list = get_nodes_from_name(intersection,other_node.all_nodes)
@@ -231,7 +277,9 @@ def merge_nodes(node,other_node):
     #     node.all_nodes[i].print_branched_nodes()
 
     unique_b =  keys_b - keys_a
-    print "Unique " + str(len(unique_b))
+    # print "Unique " + str(len(unique_b))
+    # print unique_b
+
     for key in unique_b:
         '''
         Adds the intersection nodes, those that are already in our pivoting tree
@@ -240,13 +288,15 @@ def merge_nodes(node,other_node):
         # other_node.back_nodes = node.replace_nodes(node.back_nodes, other_node.back_nodes, other_node.all_nodes)
         # other_node.forward_nodes = node.replace_nodes(node.forward_nodes, other_node.forward_nodes, other_node.all_nodes)
     return len(unique_b)
-    pass
+
 
 def get_nodes_from_name(keys, all_nodes):
     node_list = []
     for key in keys:
         node_list.append(all_nodes[key])
     return node_list
+
+
 
 
 class EndNode(Node):

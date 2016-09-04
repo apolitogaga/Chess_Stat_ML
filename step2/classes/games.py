@@ -18,23 +18,9 @@ class Game(BaseClass):
     id = None
     ID = 1
     fen = None
+    fen_eval = None
 
-    # def __init__(self, name, fen, event, wplay, bplay, result, welo, belo, round=None):
-    #     super(Game, self).__init__(name)
-    #     self.result = result
-    #     self.round = round
-    #     self.white = wplay
-    #     self.black = bplay
-    #     self.event = event
-    #     self.welo = welo
-    #     self.belo = belo
-    #     self.id = Game.ID
-    #     Game.ID += 1
-    #     fen_eval = interpret_fen(fen)
-    #     self.fen = fen_eval['board']
-    #     self.fen_eval = fen_eval['score']
-
-    def __init__(self, name, fen, event, wplay, bplay, result, welo, belo, round, fen_eval):
+    def __init__(self, name, fen, event, wplay, bplay, result, welo, belo, round):
         super(Game, self).__init__(name)
         self.result = result
         self.round = round
@@ -45,7 +31,35 @@ class Game(BaseClass):
         self.belo = belo
         self.id = Game.ID
         self.fen = fen
-        self.fen_eval = fen_eval
+        self.fen_eval = None
+
+    @classmethod
+    def init_fenless(self, name, fen, event, wplay, bplay, result, welo, belo, round=None):
+        '''
+        the first time we read a game, we have not evaluated the FEN(board), thus we must evaluate it.
+        :param name:
+        :param fen:
+        :param event:
+        :param wplay:
+        :param bplay:
+        :param result:
+        :param welo:
+        :param belo:
+        :param round:
+        :return:
+        '''
+        game = Game(name,fen, event, wplay, bplay, result, welo, belo, round)
+        Game.ID += 1
+        fen_eval = interpret_fen(fen)
+        game.fen = fen_eval['board']
+        game.fen_eval = fen_eval['score']
+        return game
+
+    @classmethod
+    def re_init(self, name, fen, event, wplay, bplay, result, welo, belo, round, fen_eval):
+        game = Game(name,fen, event, wplay, bplay, result, welo, belo, round)
+        game.fen_eval = fen_eval
+        return game
 
     def __str__(self):
         return super(Game, self).__str__()

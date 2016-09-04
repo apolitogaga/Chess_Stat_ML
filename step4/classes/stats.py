@@ -1,9 +1,9 @@
 __author__ = "codingMonkey"
 __project__ = "ChessML"
 
-from competitors import Competitor
-from events import Event
-from games import Game
+from dev2.step2.classes.competitors import Competitor
+from dev2.step2.classes.events import Event
+from dev2.step2.classes.games import Game
 from collections import defaultdict
 from nodes import Node as Nod
 from nodes import EndNode
@@ -78,10 +78,10 @@ def build_position_graph(games, victory_node, all_nodes=None):
     res = g.result
     if fen in Nod.ALLNODES:
         root = Nod.ALLNODES[fen]
-        root.add_result(res)
+        # root.add_result(res)
     else:
         root = victory_node.init(g.fen[0], res, g.fen_eval[0])
-
+        root.results = []
 
     game_length = len(g.fen)
     if len(Movement.ALL_MOVEMENTS) > game_length:
@@ -94,8 +94,10 @@ def build_position_graph(games, victory_node, all_nodes=None):
         res = g.result
         fen = g.fen[0]
         if fen != "rnbqkbnr/pppppppp/......../......../......../......../PPPPPPPP/RNBQKBNR":
-            print "error: %s <> %d <> %s"%(g.name, len(g.fen), fen)
+            # print "error: %s <> %d <> %s"%(g.name, len(g.fen), fen)
+            print "err"
         else:
+            root.add_result(res)
             root.add_movement(0)
 
             first_movement.add_node(fen)
@@ -120,6 +122,7 @@ def build_position_graph(games, victory_node, all_nodes=None):
             new_node.add_node(new_node.forward_nodes, victory_node.name)
             victory_node.add_node(victory_node.back_nodes, new_node.name)
             victory_node.add_result(res)
+            victory_node.add_movement(i)
             # root.test_added_nodes()
 
     root.save_all_nodes()
@@ -136,3 +139,24 @@ def game_statistics(games):
         text += str(len(g.fen))
         text += linesep
     return text
+
+def get_stats_node(node):
+    pass
+
+def get_stats_nodes(root_node, depth ):
+    text = ""
+    current_node = root_node
+    next_node = None
+    # root_node.order_out_nodes()
+    for i in range(depth):
+        # current_node.order_out_nodes()
+        name = current_node.get_ordered_forward_nodes()[0][0]
+        next_node = root_node.all_nodes[name]
+        text += current_node.get_stats() + "," + current_node.name + linesep
+        current_node = next_node
+
+    return text
+
+
+
+

@@ -8,10 +8,12 @@ class Competitor(BaseClass):
     elo = None
     avg_elo = None
 
-    def __init__(self, name, elo):
-        super(Competitor, self).__init__(name)
-        self.elo = []
-        self.newElo(elo)
+    @classmethod
+    def short_init(self, name, elo):
+        competitor = Competitor(name, elo, None)
+        competitor.elo = []
+        competitor.newElo(elo)
+        return competitor
 
     def __init__(self, name, elo,avg):
         super(Competitor, self).__init__(name)

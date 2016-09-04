@@ -52,7 +52,6 @@ def process_text(string):
     temp = temp.replace(".","")
     return temp
 
-
 def dict2Text(dic):
     """
     We sort and return the data in a text file.
@@ -65,6 +64,12 @@ def dict2Text(dic):
     return text
 
 
+def save_json(list,file):
+    with open(file, "w") as f:
+        for i in list:
+            json.dump(i, f, encoding="utf-8")
+            f.write(linesep)
+        f.close()
 
 
 def saveFile(data, filename):
@@ -78,10 +83,13 @@ def saveFile(data, filename):
     f.close()
 
 
-'''
-Interpret the json
-'''
+
 def get_data(file):
+    """
+    Creates a data dictionary with all the data in the json file.
+    :param file: File path
+    :return: a dictionary with the loaded data.
+    """
     network = []
     with open(file) as f:
         jsn = f.read().splitlines()

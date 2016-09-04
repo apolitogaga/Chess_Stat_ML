@@ -1,6 +1,7 @@
 __author__ = "codingMonkey"
 __project__ = "ChessML"
 
+from os import linesep
 MAX_MOVEMENTS = 457 # obtained from the dataset itself
 
 class Movement(object):
@@ -56,9 +57,9 @@ class Movement(object):
         mov_l.set_next_movement(mov)
         return mov
 
-    def add_nodes(self,other_nodes):
-
-        pass
+    # def add_nodes(self,other_nodes):
+    #
+    #     pass
 
     def add_node(self,name, val=1):
         if name in self.nodes:
@@ -80,6 +81,17 @@ class Movement(object):
         for node in self.nodes.values():
             num += node[0]
         return num
+
+    def freq_freq(self):
+        text =''
+        for key, mov in self.all_movements.iteritems():
+            n_nodes = mov.get_number_nodes()
+            if n_nodes > 0:
+                text += str(key) + ","+ str(len(self.nodes)) +"," + str(n_nodes) + linesep
+        return text
+
+    def get_ordered_backward_nodes(self):
+        return sorted(self.back_nodes.items(), key=lambda x:x[1])[::-1]
 
 
 def merge_movements(movement, other_movement):

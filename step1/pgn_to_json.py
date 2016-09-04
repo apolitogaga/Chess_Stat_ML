@@ -1,3 +1,10 @@
+__author__ = "codingMonkey"
+__project__ = "ChessML"
+'''
+This file converts the data from pgn to a more easily accesible json file.
+It also adds the state of the board after each movement.
+'''
+
 # Converts the millionbase chess PGN database (http://www.top-5000.nl/pgn.htm) to json
 # with one json dictionary per row. (That is, the resulting file is contain multiple json objects,
 # not just one large).
@@ -10,11 +17,20 @@ import sys, getopt
 
 
 def to_json(ifile, ofile):
-  count = 1
-  pgn = open(ifile) # Or where you have put it
-  fout = open(ofile, 'w') # Or where you want it
-  node = chess.pgn.read_game(pgn)
-  while node != None:
+    '''
+    This file is executed by exec.py in the same folder.
+    This can also be executed by cl, using "-i" for input and "-o" for output.
+    :param ifile:
+    :param ofile:
+    :return:
+    '''
+    print ifile
+    print ofile
+    count = 1
+    pgn = open(ifile) # Or where you have put it
+    fout = open(ofile, 'w') # Or where you want it
+    node = chess.pgn.read_game(pgn)
+    while node != None:
       info = node.headers
       info["fen"] = []
       while node.variations:
@@ -29,7 +45,7 @@ def to_json(ifile, ofile):
       if(count % 10000 == 0):
           print(count)
 
-  fout.close()
+    fout.close()
 
 
 def main(argv):
