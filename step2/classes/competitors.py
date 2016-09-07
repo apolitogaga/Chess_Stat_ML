@@ -5,8 +5,8 @@ import math
 
 
 class Competitor(BaseClass):
-    elo = None
-    avg_elo = None
+    # elo = None
+    # avg_elo = None
 
     @classmethod
     def short_init(self, name, elo):

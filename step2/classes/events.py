@@ -7,8 +7,8 @@ class Event(BaseClass):
     """
 
     """
-    minDate = None
-    maxDate = None
+    # minDate = None
+    # maxDate = None
 
     def __init__(self, name, date):
         """

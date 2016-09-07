@@ -89,7 +89,7 @@ def build_position_graph(games, victory_node, all_nodes=None):
 
     # print "%d games"%len(games)
 
-    for g in games.values():
+    for g in games.values()[:]:
         # print "G>>>> %s: %d :: %s"%(g.name, len(g.fen),"")
         res = g.result
         fen = g.fen[0]
@@ -101,6 +101,7 @@ def build_position_graph(games, victory_node, all_nodes=None):
             root.add_movement(0)
 
             first_movement.add_node(fen)
+            first_movement.add_result(res)
             for i in range(1, len(g.fen)):
                 fen = g.fen[i]
                 b_node = Nod.ALLNODES[g.fen[i - 1]]
@@ -117,6 +118,7 @@ def build_position_graph(games, victory_node, all_nodes=None):
 
                 movement = Movement.ALL_MOVEMENTS[i]
                 movement.add_node(new_node.name)
+                movement.add_result(res)
 
 
             new_node.add_node(new_node.forward_nodes, victory_node.name)

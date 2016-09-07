@@ -18,7 +18,10 @@ class Movement(object):
         Movement.ALL_MOVEMENTS[number] = (self)
         self.number_str = str(number)
         self.nodes = {}
-
+        self.n_white = 0
+        self.n_black = 0
+        self.n_draw = 0
+        self.total_movements = 0
 
     def __str__(self):
         return "%s %s"%(self.number_str, self.get_number_nodes())
@@ -35,7 +38,6 @@ class Movement(object):
     def initi_all_possible_movements(cls):
         for i in range(1,457):
             Movement(i)
-
 
     @classmethod
     def init_node(cls, number, name_node):
@@ -57,9 +59,29 @@ class Movement(object):
         mov_l.set_next_movement(mov)
         return mov
 
-    # def add_nodes(self,other_nodes):
-    #
-    #     pass
+    def set_total_movements(self):
+        self.total_movements = self.n_white + self.n_black + self.n_draw
+        n  = self.get_number_nodes()
+        if self.total_movements != n:
+            print "ERROR: not same number of movements(%d) and nodes(%d)"%(self.total_movements, n)
+
+    def add_result(self, result):
+        if result == 1:
+            self.n_white +=1
+        elif result == -1:
+            self.n_black +=1
+        elif result == 0:
+            self.n_draw +=1
+
+    def add_results(self, n_white, n_black, n_draw):
+        self.n_white += n_white
+        self.n_black += n_black
+        self.n_draw += n_draw
+
+    def get_results_string(self):
+        self.set_total_movements()
+        return "%d, %d, %d, %d"%(self.n_white, self.n_black, self.n_draw, self.get_number_nodes())
+
 
     def add_node(self,name, val=1):
         if name in self.nodes:
@@ -105,6 +127,25 @@ def merge_movements(movement, other_movement):
             print"ERRRRRR"
     print
     return movement
+
+
+
+def define_probabilities_movements(root_movements, NODE_ALL_MOVEMENTS):
+    for i, movement in root_movements.ALL_MOVEMENTS.iteritems():
+        # if i >40:
+        #     break
+        # for node in movement.nodes:
+        #     node_object = NODE_ALL_MOVEMENTS[node]
+        #     black =  node_object.get_black_victories()
+        #     white =  node_object.get_white_victories()
+        #     draw = node_object.get_draw_results()
+        #     movement.add_results(white, black, draw)
+
+        print movement.get_results_string()
+
+
+
+
 
 
 

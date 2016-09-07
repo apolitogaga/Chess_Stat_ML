@@ -135,11 +135,23 @@ class Node(object):
     def get_number_games(self):
         return len(self.results)
 
+    def count_result(self, result=WHITE):
+        return self.results.count(result)
+
+    def get_white_victories(self):
+        return self.count_result(WHITE)
+
+    def get_black_victories(self):
+        return self.count_result(BLACK)
+
+    def get_draw_results(self):
+        return self.count_result(DRAW)
+
     def get_results_proportions(self):
-        num = len(self.results)
-        white = self.results.count(WHITE)
-        draw = self.results.count(DRAW)
-        black = self.results.count(BLACK)
+        num = self.get_number_games()
+        white = self.get_white_victories()
+        draw = self.get_black_victories()
+        black = self.get_draw_results()
         print "%d %d %d, %d "%(white,draw,black,num)
 
     def sort_vertices(self,nodes):

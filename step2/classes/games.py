@@ -8,19 +8,32 @@ from board import Board, interpret_fen
 ID = 0
 
 class Game(BaseClass):
-    white = None
-    black = None
-    event = None
-    welo = None
-    belo = None
-    round = None
-    result = None
-    id = None
+    # white = None
+    # black = None
+    # event = None
+    # welo = None
+    # belo = None
+    # round = None
+    # result = None
+    # id = None
+    # fen = None
+    # fen_eval = None
     ID = 1
-    fen = None
-    fen_eval = None
+
 
     def __init__(self, name, fen, event, wplay, bplay, result, welo, belo, round):
+        """
+        :param str name:
+        :param str fen:
+        :param Event event:
+        :param Competitor wplay:
+        :param Competitor bplay:
+        :param int result:
+        :param int welo:
+        :param int belo:
+        :param int round:
+        :return:
+        """
         super(Game, self).__init__(name)
         self.result = result
         self.round = round
@@ -37,15 +50,15 @@ class Game(BaseClass):
     def init_fenless(self, name, fen, event, wplay, bplay, result, welo, belo, round=None):
         '''
         the first time we read a game, we have not evaluated the FEN(board), thus we must evaluate it.
-        :param name:
-        :param fen:
-        :param event:
-        :param wplay:
-        :param bplay:
-        :param result:
-        :param welo:
-        :param belo:
-        :param round:
+        :param str name:
+        :param str fen:
+        :param Event event:
+        :param Competitor wplay:
+        :param Competitor bplay:
+        :param int result:
+        :param int welo:
+        :param int belo:
+        :param int round:
         :return:
         '''
         game = Game(name,fen, event, wplay, bplay, result, welo, belo, round)

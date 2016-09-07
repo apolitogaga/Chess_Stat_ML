@@ -199,11 +199,6 @@ def read_all_matches():
         tools.save_new_json(GAMES, file_write)
 
 
-
-
-
-
-
 if __name__ == '__main__':
     # do_step_1()
     do_step_2()
